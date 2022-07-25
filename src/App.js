@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Figure from './components/Figure/Figure';
-// import axios from "axios";
+
 import Header from './components/Header/Header';
 import WrongInput from './components/Game/WrongInput';
 import Input from './components/Game/Input';
@@ -19,22 +19,7 @@ function App() {
   const [correctLetters, setCorrectLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
-  // const [meanings, setMeanings] = useState([]);
 
-  // const dictionaryApi = async () => {
-  //   try {
-  //     const data = await axios.get(
-  //       `https://api.dictionaryapi.dev/api/v2/entries/en/${selectedWord}`
-  //     );
-  //     setMeanings(data.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   dictionaryApi();
-  // }, [selectedWord]);
   useEffect(() => {
     const handleKeydown = event => {
       const { key, keyCode } = event;
@@ -71,8 +56,6 @@ function App() {
     selectedWord = words[random];
   }
 
-
-  // console.log(meanings[0].definitions[0].definition);
   return (
     <>
       <Header />
