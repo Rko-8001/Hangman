@@ -1,0 +1,1 @@
+export const words = ['application', 'programming', 'interface', 'react', 'javascript', 'node'];

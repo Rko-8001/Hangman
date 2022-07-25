@@ -1,24 +1,90 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Figure from './components/Figure/Figure';
+// import axios from "axios";
+import Header from './components/Header/Header';
+import WrongInput from './components/Game/WrongInput';
+import Input from './components/Game/Input';
+import PopUp from './components/Messages/PopUp';
+import Notification from './components/Messages/Notification';
+import { showNotification as show, checkWin } from './components/Helper';
+import { words } from './components/Data/Data';
+import "./App.css";
+
+
+let selectedWord = words[Math.floor(Math.random() * words.length)];
+
 
 function App() {
+  const [playable, setPlayable] = useState(true);
+  const [correctLetters, setCorrectLetters] = useState([]);
+  const [wrongLetters, setWrongLetters] = useState([]);
+  const [showNotification, setShowNotification] = useState(false);
+  // const [meanings, setMeanings] = useState([]);
+
+  // const dictionaryApi = async () => {
+  //   try {
+  //     const data = await axios.get(
+  //       `https://api.dictionaryapi.dev/api/v2/entries/en/${selectedWord}`
+  //     );
+  //     setMeanings(data.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   dictionaryApi();
+  // }, [selectedWord]);
+  useEffect(() => {
+    const handleKeydown = event => {
+      const { key, keyCode } = event;
+      if (playable && keyCode >= 65 && keyCode <= 90) {
+        const letter = key.toLowerCase();
+        if (selectedWord.includes(letter)) {
+          if (!correctLetters.includes(letter)) {
+            setCorrectLetters(currentLetters => [...currentLetters, letter]);
+          } else {
+            show(setShowNotification);
+          }
+        } else {
+          if (!wrongLetters.includes(letter)) {
+            setWrongLetters(currentLetters => [...currentLetters, letter]);
+          } else {
+            show(setShowNotification);
+          }
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeydown);
+
+    return () => window.removeEventListener('keydown', handleKeydown);
+  }, [correctLetters, wrongLetters, playable]);
+
+  function playAgain() {
+    setPlayable(true);
+
+    // Empty Arrays
+    setCorrectLetters([]);
+    setWrongLetters([]);
+
+    const random = Math.floor(Math.random() * words.length);
+    selectedWord = words[random];
+  }
+
+
+  // console.log(meanings[0].definitions[0].definition);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header />
+      <div className="game-container">
+        <Figure wrongLetters={wrongLetters} />
+        <WrongInput wrongLetters={wrongLetters} />
+        <Input selectedWord={selectedWord} correctLetters={correctLetters} />
+      </div>
+
+      <PopUp correctLetters={correctLetters} wrongLetters={wrongLetters} selectedWord={selectedWord} setPlayable={setPlayable} playAgain={playAgain} />
+      <Notification showNotification={showNotification} />
+    </>
   );
 }
 
